@@ -1,10 +1,16 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import apiRoutes from './routes/api.js';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -68,6 +74,16 @@ app.get('/api/health', (req, res) => {
     dbStatus: mongoose.connection.readyState === 1 ? 'connected' : 'connecting_or_offline'
   });
 });
+
+// Production Static File Serving (Render / Cloud Deployment)
+const distPath = path.join(__dirname, '../dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
 
 // Global Centralized Error Handling Middleware (prevents unhandled stack trace leaks)
 app.use((err, req, res, next) => {
