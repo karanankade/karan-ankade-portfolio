@@ -9,6 +9,7 @@ import {
   activeCourses as initialActiveCourses
 } from './portfolioData';
 import { initialBlogs } from './blogData';
+import { apiUrl } from '../config/api';
 
 const STORAGE_KEY_DATA = 'karan_portfolio_data_v1';
 const STORAGE_KEY_TOKEN = 'karan_admin_token';
@@ -57,8 +58,8 @@ const getAuthHeaders = () => {
 const initStoreFromBackend = async () => {
   try {
     const [resPortfolio, resBlogs] = await Promise.all([
-      fetch('/api/portfolio').then((res) => (res.ok ? res.json() : null)),
-      fetch('/api/blogs').then((res) => (res.ok ? res.json() : null))
+      fetch(apiUrl('/api/portfolio')).then((res) => (res.ok ? res.json() : null)),
+      fetch(apiUrl('/api/blogs')).then((res) => (res.ok ? res.json() : null))
     ]);
 
     if (resPortfolio && resPortfolio.success && resPortfolio.data) {
@@ -99,7 +100,7 @@ const syncPortfolioToMongoDB = async (newData) => {
   notifyListeners();
 
   try {
-    const res = await fetch('/api/portfolio', {
+    const res = await fetch(apiUrl('/api/portfolio'), {
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify(newData)
@@ -165,7 +166,7 @@ export const portfolioStore = {
 
   fetchPrivateMessages: async () => {
     try {
-      const res = await fetch('/api/messages', {
+      const res = await fetch(apiUrl('/api/messages'), {
         headers: getAuthHeaders()
       });
       if (res.ok) {
@@ -185,7 +186,7 @@ export const portfolioStore = {
   // -----------------------------------------------------------
   fetchBlogs: async () => {
     try {
-      const res = await fetch('/api/blogs', {
+      const res = await fetch(apiUrl('/api/blogs'), {
         headers: getAuthHeaders()
       });
       if (res.ok) {
@@ -204,7 +205,7 @@ export const portfolioStore = {
 
   addBlog: async (blogPayload) => {
     try {
-      const res = await fetch('/api/blogs', {
+      const res = await fetch(apiUrl('/api/blogs'), {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(blogPayload)
@@ -235,7 +236,7 @@ export const portfolioStore = {
 
   updateBlog: async (id, updatedFields) => {
     try {
-      const res = await fetch(`/api/blogs/${id}`, {
+      const res = await fetch(apiUrl(`/api/blogs/${id}`), {
         method: 'PUT',
         headers: getAuthHeaders(),
         body: JSON.stringify(updatedFields)
@@ -257,7 +258,7 @@ export const portfolioStore = {
 
   deleteBlog: async (id) => {
     try {
-      await fetch(`/api/blogs/${id}`, {
+      await fetch(apiUrl(`/api/blogs/${id}`), {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
@@ -271,7 +272,7 @@ export const portfolioStore = {
 
   likeBlog: async (idOrSlug) => {
     try {
-      const res = await fetch(`/api/blogs/${idOrSlug}/like`, { method: 'POST' });
+      const res = await fetch(apiUrl(`/api/blogs/${idOrSlug}/like`), { method: 'POST' });
       if (res.ok) {
         const json = await res.json();
         if (json.success) {
@@ -393,7 +394,7 @@ export const portfolioStore = {
   // -----------------------------------------------------------
   addMessage: async (msg) => {
     try {
-      const res = await fetch('/api/messages', {
+      const res = await fetch(apiUrl('/api/messages'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(msg)
@@ -428,7 +429,7 @@ export const portfolioStore = {
     notifyListeners();
 
     try {
-      await fetch(`/api/messages/${id}/read`, {
+      await fetch(apiUrl(`/api/messages/${id}/read`), {
         method: 'PUT',
         headers: getAuthHeaders()
       });
@@ -442,7 +443,7 @@ export const portfolioStore = {
     notifyListeners();
 
     try {
-      await fetch(`/api/messages/${id}`, {
+      await fetch(apiUrl(`/api/messages/${id}`), {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
@@ -456,7 +457,7 @@ export const portfolioStore = {
     notifyListeners();
 
     try {
-      await fetch('/api/messages', {
+      await fetch(apiUrl('/api/messages'), {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
@@ -471,8 +472,8 @@ export const portfolioStore = {
   refreshFromCloud: async () => {
     try {
       const [resPortfolio, resBlogs] = await Promise.all([
-        fetch('/api/portfolio'),
-        fetch('/api/blogs', { headers: getAuthHeaders() })
+        fetch(apiUrl('/api/portfolio')),
+        fetch(apiUrl('/api/blogs'), { headers: getAuthHeaders() })
       ]);
 
       if (resPortfolio.ok) {

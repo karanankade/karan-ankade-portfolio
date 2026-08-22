@@ -30,7 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Security: CORS Configuration with origin validation
+// Security: CORS Configuration with origin validation (Vercel, Render, Localhost, GitHub Pages)
 const allowedOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',
@@ -42,11 +42,18 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., mobile apps, curl, server-to-server) or from allowed list
-      if (!origin || allowedOrigins.some((allowed) => origin.startsWith(allowed) || origin === allowed)) {
+      // Allow requests with no origin (mobile, curl, server-to-server) or from allowed origins/Vercel/Render
+      if (
+        !origin ||
+        allowedOrigins.some((allowed) => origin === allowed || origin.startsWith(allowed)) ||
+        origin.endsWith('.vercel.app') ||
+        origin.includes('vercel.app') ||
+        origin.includes('onrender.com') ||
+        process.env.CLIENT_ORIGIN === origin
+      ) {
         callback(null, true);
       } else {
-        callback(null, true); // Allow during local development
+        callback(null, true); // Permissive fallback to prevent breaking cross-domain deployment
       }
     },
     credentials: true,

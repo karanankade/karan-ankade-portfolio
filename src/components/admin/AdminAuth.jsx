@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Shield, Mail, Lock, AlertTriangle, ArrowRight, RefreshCw, CheckCircle2, KeyRound, Clock, ShieldCheck, UserCheck } from 'lucide-react';
 import { playAccessGrantedSound, playErrorSound, playClickSound } from '../../utils/audioFX';
 import { portfolioStore } from '../../data/portfolioStore';
+import { apiUrl } from '../../config/api';
 
 const AUTHORIZED_ADMIN_EMAIL = 'karanankade12@gmail.com';
 
@@ -36,7 +37,7 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/auth/send-otp', {
+      const res = await fetch(apiUrl('/api/auth/send-otp'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: AUTHORIZED_ADMIN_EMAIL })
@@ -137,7 +138,7 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
     }
 
     try {
-      const res = await fetch('/api/auth/verify-otp', {
+      const res = await fetch(apiUrl('/api/auth/verify-otp'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

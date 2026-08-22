@@ -7,6 +7,7 @@ import {
   BookOpen, FileText, Heart, Tag, RotateCcw
 } from 'lucide-react';
 import { portfolioStore, usePortfolioData } from '../../data/portfolioStore';
+import { apiUrl } from '../../config/api';
 
 export default function AdminDashboard({ onClose, onLogout }) {
   const { data, messages, blogs } = usePortfolioData();
@@ -252,7 +253,7 @@ export default function AdminDashboard({ onClose, onLogout }) {
     setBackupStatus({ type: 'info', text: 'Initiating Google SMTP handshake & sending diagnostic email...' });
     try {
       const token = portfolioStore.getAuthToken();
-      const res = await fetch('/api/auth/test-smtp', {
+      const res = await fetch(apiUrl('/api/auth/test-smtp'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

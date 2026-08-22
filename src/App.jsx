@@ -17,6 +17,7 @@ import CyberCursorTrail from './components/ui/CyberCursorTrail';
 import ThreatRadarVisualizer from './components/ui/ThreatRadarVisualizer';
 import { setSoundEnabledState } from './utils/audioFX';
 import { portfolioStore } from './data/portfolioStore';
+import { apiUrl } from './config/api';
 
 export default function App() {
   const [activeRole, setActiveRole] = useState('cyber');
@@ -35,7 +36,7 @@ export default function App() {
       if (!token) return;
 
       try {
-        const res = await fetch('/api/auth/verify-session', {
+        const res = await fetch(apiUrl('/api/auth/verify-session'), {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {

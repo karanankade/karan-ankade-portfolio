@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { usePortfolioData, portfolioStore } from '../../data/portfolioStore';
 import { playClickSound, playHoverSound } from '../../utils/audioFX';
+import { apiUrl } from '../../config/api';
 import HoloCardTilt from './HoloCardTilt';
 
 const CATEGORIES = [
@@ -459,7 +460,7 @@ export default function BlogsSection() {
     playClickSound();
     setActiveBlog(blog);
     if (blog._id || blog.id || blog.slug) {
-      fetch(`/api/blogs/${blog._id || blog.slug || blog.id}`).catch(() => {});
+      fetch(apiUrl(`/api/blogs/${blog._id || blog.slug || blog.id}`)).catch(() => {});
     }
   };
 
